@@ -15,6 +15,10 @@ export default function Home() {
       name: "Send SOL to Friend's Wallet with Phantom",
       path: "/interact-with-wallets",
     },
+    {
+      name: "Ping With Approval",
+      path: "/ping-with-approval",
+    },
   ];
   return (
     <main className="m-10">
