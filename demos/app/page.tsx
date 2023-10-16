@@ -7,6 +7,14 @@ export default function Home() {
       name: "Reading Data From Network",
       path: "/reading-data",
     },
+    {
+      name: "Writing Data To Network",
+      path: "/writing-data",
+    },
+    {
+      name: "Send SOL to Friend's Wallet with Phantom",
+      path: "/interact-with-wallets",
+    },
   ];
   return (
     <main className="m-10">
