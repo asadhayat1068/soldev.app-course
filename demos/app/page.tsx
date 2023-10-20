@@ -19,6 +19,10 @@ export default function Home() {
       name: "Ping With Approval",
       path: "/ping-with-approval",
     },
+    {
+      name: "Movie Review App (Serialize Instruction Data)",
+      path: "/serialize-instruction-data",
+    },
   ];
   return (
     <main className="m-10">
