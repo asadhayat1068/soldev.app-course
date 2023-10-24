@@ -13,6 +13,7 @@ import {
   WalletMultiButton,
 } from "@solana/wallet-adapter-react-ui";
 import { Movie } from "./Movie";
+import MovieList from "./MovieList";
 
 const MOVIE_REVIEW_PROGRAM_ID = "CenYq6bDRB7p73EjsPEpiYN7uveyPUTdXkDkgUduboaN";
 
@@ -170,6 +171,10 @@ function MovieReviewApp() {
             </form>
           </div>
         )}
+
+        <section className="content-center">
+          <MovieList ProgramId={MOVIE_REVIEW_PROGRAM_ID} />
+        </section>
 
         <div className="max-w-fit p-5 mx-5 border border-white rounded-md mb-4">
           <p>{`Address: ${publicKey}`}</p>

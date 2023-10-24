@@ -1,13 +1,13 @@
-import { u8, str, struct } from "@project-serum/borsh";
+import { u8, str, struct, bool } from "@project-serum/borsh";
 
 export class Movie {
   title: string;
-  ratting: number;
+  rating: number;
   description: string;
 
   constructor(title: string, rating: number, description: string) {
     this.title = title;
-    this.ratting = rating;
+    this.rating = rating;
     this.description = description;
   }
 
@@ -33,11 +33,17 @@ export class Movie {
       `The Dark Knight is a 2008 superhero film directed, produced, and co-written by Christopher Nolan. Batman, in his darkest hour, faces his greatest challenge yet: he must become the symbol of the opposite of the Batmanian order, the League of Shadows.`
     ),
   ];
+  static borshAccountSchema = struct([
+    bool("initialized"),
+    u8("rating"),
+    str("title"),
+    str("description"),
+  ]);
 
   borshInstructionSchema = struct([
     u8("variant"),
     str("title"),
-    u8("ratting"),
+    u8("rating"),
     str("description"),
   ]);
 
@@ -45,5 +51,19 @@ export class Movie {
     const buffer = Buffer.alloc(1024); // Allocate buffer
     this.borshInstructionSchema.encode({ ...this, variant: 0 }, buffer); // Encode instruction data into buffer
     return buffer.slice(0, this.borshInstructionSchema.getSpan(buffer)); // Return buffer with correct size
+  }
+
+  static deserialize(buffer?: Buffer): Movie | null {
+    if (!buffer) {
+      return null;
+    }
+    try {
+      const { title, rating, description } =
+        this.borshAccountSchema.decode(buffer);
+      return new Movie(title, rating, description);
+    } catch (error: any) {
+      console.error("Deserialization error: ", error);
+      return null;
+    }
   }
 }
