@@ -3,51 +3,29 @@ import React, { useEffect, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { Movie } from "./Movie";
+import { MovieCoordinator } from "./MovieCoordinator";
 
-function MovieList({ ProgramId }: { ProgramId: string }) {
+const ITEMS_PER_PAGE = 10;
+
+function MovieList() {
   const { connection } = useConnection();
   const { publicKey } = useWallet();
   const [movies, setMovies] = useState<(Movie | null)[]>([]);
-  const [page, setPage] = useState(0);
-  const [maxPage, setMaxPage] = useState(0);
-  const itemsPerPage = 10;
+  const [page, setPage] = useState(1);
   useEffect(() => {
-    getReviews(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [publicKey, connection]);
-
-  const getReviews = async (pageNumber: number) => {
-    const accounts = await connection.getProgramAccounts(
-      new PublicKey(ProgramId),
-      {
-        dataSlice: {
-          offset: 0,
-          length: 0,
-        },
-      }
+    MovieCoordinator.fetchPage(connection, page, ITEMS_PER_PAGE).then(
+      setMovies
     );
-    const accountKeys = accounts.map(({ pubkey }) => pubkey);
-    setMaxPage(Math.ceil(accountKeys.length / itemsPerPage));
-    const startIndex = pageNumber * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedKeys = accountKeys.slice(startIndex, endIndex);
-    const moviesData = await connection.getMultipleAccountsInfo(paginatedKeys);
-    const _movies: (Movie | null)[] = moviesData.map((account) => {
-      return Movie.deserialize(account?.data);
-    });
-    setMovies(_movies);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [publicKey, connection, page]);
+
   const nextPage = () => {
-    if (page < maxPage) {
-      setPage(page + 1);
-      getReviews(page + 1);
-    }
+    setPage(page + 1);
   };
 
   const prevPage = () => {
-    if (page > 0) {
+    if (page > 1) {
       setPage(page - 1);
-      getReviews(page - 1);
     }
   };
 
@@ -59,7 +37,7 @@ function MovieList({ ProgramId }: { ProgramId: string }) {
       <section className="flex flex-col">
         <div className="text-center my-4">
           <button onClick={prevPage}> &lt; Prev </button>
-          <span> &nbsp;&nbsp; {page + 1} &nbsp;&nbsp;</span>
+          <span> &nbsp;&nbsp; {page} &nbsp;&nbsp;</span>
           <button onClick={nextPage}> Next &gt; </button>
         </div>
       </section>

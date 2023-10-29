@@ -173,7 +173,7 @@ function MovieReviewApp() {
         )}
 
         <section className="content-center">
-          <MovieList ProgramId={MOVIE_REVIEW_PROGRAM_ID} />
+          <MovieList />
         </section>
 
         <div className="max-w-fit p-5 mx-5 border border-white rounded-md mb-4">
