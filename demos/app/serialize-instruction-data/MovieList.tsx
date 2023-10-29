@@ -50,7 +50,6 @@ function MovieList() {
             type="text"
             onChange={searchInputhandler}
           />
-          {search}
         </div>
       </section>
       <section className="flex flex-col">
