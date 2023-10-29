@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
 import { Movie } from "./Movie";
 import { MovieCoordinator } from "./MovieCoordinator";
 
@@ -11,13 +10,18 @@ function MovieList() {
   const { connection } = useConnection();
   const { publicKey } = useWallet();
   const [movies, setMovies] = useState<(Movie | null)[]>([]);
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   useEffect(() => {
-    MovieCoordinator.fetchPage(connection, page, ITEMS_PER_PAGE).then(
-      setMovies
-    );
+    MovieCoordinator.fetchPage(
+      connection,
+      page,
+      ITEMS_PER_PAGE,
+      search,
+      search != ""
+    ).then(setMovies);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [publicKey, connection, page]);
+  }, [publicKey, connection, page, search]);
 
   const nextPage = () => {
     setPage(page + 1);
@@ -29,11 +33,26 @@ function MovieList() {
     }
   };
 
+  const searchInputhandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+  };
+
   return (
     <div className="min-w-lg border border-white mb-5 pb-3">
       <header className="text-3xl py-5">
         <p className="text-center">Movie Reviews</p>
       </header>
+      <section className="flex flex-col">
+        <div className="text-center my-4">
+          <span>Search: &nbsp;</span>
+          <input
+            className="border border-white text-center text-gray-800 py-2 px-4 rounded-lg"
+            type="text"
+            onChange={searchInputhandler}
+          />
+          {search}
+        </div>
+      </section>
       <section className="flex flex-col">
         <div className="text-center my-4">
           <button onClick={prevPage}> &lt; Prev </button>
